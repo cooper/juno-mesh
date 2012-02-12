@@ -84,6 +84,8 @@ Kominek. It has grown to be a bit more *practical*.
   very, very extensible. designed to be so customizable that almost anything can be edited
   by using a module. requires more resources than before, but is also more prepared for
   IRC networks with large loads.
+* **juno4**: also known as juno-mesh, juno4 is the first version of juno which is not a
+  from-scratch rewrite. it is based on juno3 and aims to implement mesh server linking.
   
 When juno2 was in development, it was named "juno" where juno1 was named "juno-ircd" as it
 always had been. When juno3 was born, juno-ircd and juno were renamed to juno1 and juno2
