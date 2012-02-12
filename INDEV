@@ -853,3 +853,5 @@ CHANGES:
             0. first commit.
 
             1. updated version info. updated README.
+
+            2. removed hideous HUP handler.

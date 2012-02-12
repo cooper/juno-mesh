@@ -10,7 +10,7 @@ use utils qw[conf lconf log2 fatal gv set];
 utils::ircd_LOAD();
 
 our @reloadable;
-my ($VERSION, %global) = '4.0.0.1';
+my ($VERSION, %global) = '4.0.0.2';
 
 sub start {
 
@@ -139,27 +139,7 @@ sub terminate {
 }
 
 # handle a HUP
-sub signalhup {
-
-    # find out what is wanted
-    open my $hup, 'etc/HUP' or log2('can\'t open HUP file') and return;
-
-    while (my $line = <$hup>) {
-    given ((split /\s+/, $line)[0]) {
-        when ('rehash') {
-            log2("reloading server configuration file by request of HUP signal");
-            utils::parse_config('etc/ircd.conf') or log2("configuration error");
-            log2("finished rehashing")              
-        }
-        when ('terminate') {
-            log2("terminating by request of HUP signal");
-            terminate()
-        }
-        default { return }
-    } }
-
-    return 1
-}
+sub signalhup { }
 
 sub signalpipe {
 }
