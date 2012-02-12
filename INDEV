@@ -855,3 +855,6 @@ CHANGES:
             1. updated version info. updated README.
 
             2. removed hideous HUP handler.
+
+            3. removed server 'params' option for register_handler() because it has been replaced by the new parameter checking.
+               removed server 'forward' option for seemingly obvious reasons.

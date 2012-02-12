@@ -122,8 +122,6 @@ sub register_server_command {
     server::mine::register_handler(
         $mod->{name},
         $opts{name},
-        0, # former parameter checking
-        $opts{forward}    || 0,
         $CODE
     ) or return;
 

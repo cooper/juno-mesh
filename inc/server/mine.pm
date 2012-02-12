@@ -18,8 +18,6 @@ sub register_handler {
         return
     }
 
-    my ($params, $forward) = (shift, shift);
-
     # ensure that it is CODE
     my $ref = shift;
     if (ref $ref ne 'CODE') {
@@ -36,8 +34,6 @@ sub register_handler {
     #success
     $commands{$command}{$source} = {
         code    => $ref,
-        params  => $params,
-        forward => $forward,
         source  => $source
     };
     log2("$source registered $command");
@@ -148,25 +144,7 @@ sub handle {
         }
 
         # it exists- parse it.
-        foreach my $source (keys %{$commands{$command}}) {
-
-            # tell the other servers if the forward is enabled
-            send_children($server, $line) if $commands{$command}{$source}{forward};
-
-            # are there enough parameters?
-            if ($#s >= $commands{$command}{$source}{params}) {
-                $commands{$command}{$source}{code}($server, $line, @s)
-            }
-
-            # do not allow incorrect parameter count
-            else {
-                log2("not enough parameters for $command: \"$line\"; dropping $$server{name}");
-                $server->{conn}->done('incorrect parameter count for command '.$command);
-                return
-            }
-        }
-
-        # to make things prettier
+        $commands{$command}{source}{code}($server, $line, @s);
     }
     return 1
 }
