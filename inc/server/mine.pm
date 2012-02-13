@@ -165,11 +165,6 @@ sub send_burst {
         # the server already knows *everything* about itself!
         next if $serv == $server;
 
-        # the server already knows about me.
-        if ($serv != gv('SERVER')) {
-            fire_command($server, sid => $serv)
-        }
-
         # send modes using compact AUM and ACM
         fire_command($server, aum => $serv);
         fire_command($server, acm => $serv)
@@ -179,6 +174,7 @@ sub send_burst {
     foreach my $user (values %user::user) {
         # ignore users the server already knows!
         next if $user->{server} == $server || $server->{sid} == $user->{source};
+        next unless $user->is_local;
         fire_command($server, uid => $user);
 
         # oper flags
