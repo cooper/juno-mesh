@@ -144,7 +144,7 @@ sub server_notice {
         $user->{conn}->send(':'.gv('SERVER', 'name')." NOTICE $$user{nick} :$msg");
     }
     else {
-        server::mine::fire_command($user->{location}, privmsgnotice => 'NOTICE', gv('SERVER'), $user, $message);
+        server::mine::fire_command($user->{location}, privmsgnotice => 'NOTICE', gv('SERVER'), $user, $msg);
     }
 }
 
