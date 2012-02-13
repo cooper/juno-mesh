@@ -273,14 +273,14 @@ sub privmsgnotice {
         $channel->channel::mine::send_all(':'.$user->full." $command $$channel{name} :$message", $user);
 
         # then tell local servers if necessary
-        my %sent;
-        foreach my $usr (values %user::user) {
-            next if $server == $usr->{location};
-            next if $usr->is_local;
-            next if $sent{$usr->{location}};
-            $sent{$usr->{location}} = 1;
-            server::mine::fire_command($usr->{location}, privmsgnotice => $command, $user, $channel->{name}, $message);
-        }
+        #my %sent;
+        #foreach my $usr (values %user::user) {
+        #    next if $server == $usr->{location};
+        #    next if $usr->is_local;
+        #    next if $sent{$usr->{location}};
+        #    $sent{$usr->{location}} = 1;
+        #    server::mine::fire_command($usr->{location}, privmsgnotice => $command, $user, $channel->{name}, $message);
+        #}
 
         return 1
     }
