@@ -40,11 +40,11 @@ my %scommands = (
         code   => \&umode
     },
     PRIVMSG => {
-        params => [qw(user any any :rest)],
+        params => [qw(source any any :rest)],
         code   => \&privmsgnotice
     },
     NOTICE => {
-        params => [qw(user any any :rest)],
+        params => [qw(source any any :rest)],
         code   => \&privmsgnotice
     },
     JOIN => {
