@@ -106,7 +106,7 @@ my %scommands = (
 
 our $mod = API::Module->new(
     name        => 'core_scommands',
-    version     => '0.6',
+    version     => '0.7',
     description => 'the core set of server commands',
     requires    => ['server_commands'],
     initialize  => \&init
@@ -512,15 +512,25 @@ sub skill {
     my ($server, $data, $user, $tuser, $reason) = @_;
 
     # we ignore any non-local users
-    if ($tuser->is_local) {
-        $tuser->{conn}->done("Killed: $reason [$$user{nick}]");
-    }
+    $tuser->{conn}->done("Killed: $reason [$$user{nick}]") if $tuser->is_local;
 }
 
 sub sconnect {
     # user dummy   server     any
     # :uid CONNECT source_sid target_name
     my ($server, $data, $user, $serv, $target) = @_;
+
+    # obviously we can only connect locally
+    if ($serv != gv('SERVER')) {
+        log2('got CONNECT command for a server which is not this server.');
+        return
+    }
+
+    if (!server::linkage::connect_server($server)) {
+        #$user->server_notice('CONNECT', 'couldn\'t connect to '.$server);
+    }
+
+    return 1
 }
 
 $mod

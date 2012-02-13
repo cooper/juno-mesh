@@ -883,3 +883,5 @@ CHANGES:
             February 13, 2012
 
             1. don't pointlessly send KILL messages to all children. send them to the location of the target.
+
+            2. added CONNECT server command for connecting servers remotely.
