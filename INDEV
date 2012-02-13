@@ -875,3 +875,7 @@ CHANGES:
 
             9. fixed bug in PRIVMSG and NOTICE handler which caused massive flooding.
                fixed bug where QUIT message would be sent for server quits.
+
+        1. February 12, 2012
+
+            0. made a much prettier MAP command.

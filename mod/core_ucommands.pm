@@ -150,7 +150,7 @@ my %ucommands = (
 
 our $mod = API::Module->new(
     name        => 'core_ucommands',
-    version     => '0.5',
+    version     => '0.6',
     description => 'the core set of user commands',
     requires    => ['user_commands'],
     initialize  => \&init
@@ -411,9 +411,24 @@ sub privmsgnotice {
 sub cmap {
     # TODO this will be much prettier later!
     my $user  = shift;
+    my $total = scalar values %user::user;
+    my $me    = gv('SERVER');
+    my $users = scalar grep { $_->{server} == $me } values %user::user;
+    my $per   = int $users / $total * 100;
+
+    $user->numeric('RPL_MAP', "- \2$$me{sid}\2 $$me{name}: $users [$per\%]");
+
+    my $avg;
     foreach my $server (values %server::server) {
-        $user->numeric('RPL_MAP', '    '.$server->{name}.':'.$server->{sid})
+        next if $server == $me;
+        $users = scalar grep { $_->{server} == $server } values %user::user;
+        $per   = int $users / $total * 100;
+        $avg  += $users;
+        $user->numeric('RPL_MAP', "    - \2$$server{sid}\2 $$server{name}: $users [$per\%]");
     }
+
+    my $average = int $avg / scalar values %server::server;
+    $user->numeric('RPL_MAP', "- Total of $total users, average $average users per server");
     $user->numeric('RPL_MAPEND');
 }
 
