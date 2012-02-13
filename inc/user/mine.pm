@@ -136,15 +136,16 @@ sub sendserv {
 }
 
 # a notice from server
+# revision: supports nonlocal users as well now
 sub server_notice {
     my ($user, @args) = @_;
-    if (!$user->{conn}) {
-        my $sub = (caller 1)[3];
-        log2("can't send data to a nonlocal user! please report this error by $sub. $$user{nick}");
-        return
-    }
     my $msg = $args[1] ? "*** $args[0]: $args[1]" : $args[0];
-    $user->{conn}->send(':'.gv('SERVER', 'name')." NOTICE $$user{nick} :$msg")
+    if ($user->is_local) {
+        $user->{conn}->send(':'.gv('SERVER', 'name')." NOTICE $$user{nick} :$msg");
+    }
+    else {
+        server::mine::fire_command($user->{location}, privmsgnotice => 'NOTICE', gv('SERVER'), $user, $message);
+    }
 }
 
 sub numeric {

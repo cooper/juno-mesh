@@ -8,105 +8,109 @@ use utils qw(col log2 lceq lconf match cut_to_limit conf gv);
 
 my %scommands = (
     SID => {
-        params  => [qw(server dummy any ts any any any :rest)],
-        code    => \&sid
+        params => [qw(server dummy any ts any any any :rest)],
+        code   => \&sid
     },
     UID => {
-        params  => [qw(server dummy any ts any any any any any any :rest)],
-        code    => \&uid
+        params => [qw(server dummy any ts any any any any any any :rest)],
+        code   => \&uid
     },
     QUIT => {
-        params  => [qw(source dummy :rest)],
-        code    => \&quit
+        params => [qw(source dummy :rest)],
+        code   => \&quit
     },
     NICK => {
-        params  => [qw(user dummy any)],
-        code    => \&nick
+        params => [qw(user dummy any)],
+        code   => \&nick
     },
     BURST => {
-        params  => [qw(server)],
-        code    => \&burst
+        params => [qw(server)],
+        code   => \&burst
     },
     ENDBURST => {
-        params  => [qw(server)],
-        code    => \&endburst
+        params => [qw(server)],
+        code   => \&endburst
     },
     ADDUMODE => {
-        params  => [qw(server dummy any any)],
-        code    => \&addumode
+        params => [qw(server dummy any any)],
+        code   => \&addumode
     },
     UMODE => {
-        params  => [qw(user dummy any)],
-        code    => \&umode
+        params => [qw(user dummy any)],
+        code   => \&umode
     },
     PRIVMSG => {
-        params  => [qw(user any any :rest)],
-        code    => \&privmsgnotice
+        params => [qw(user any any :rest)],
+        code   => \&privmsgnotice
     },
     NOTICE => {
-        params  => [qw(user any any :rest)],
-        code    => \&privmsgnotice
+        params => [qw(user any any :rest)],
+        code   => \&privmsgnotice
     },
     JOIN => {
-        params  => [qw(user dummy any ts)],
-        code    => \&sjoin
+        params => [qw(user dummy any ts)],
+        code   => \&sjoin
     },
     OPER => {
-        params  => [qw(user dummy @rest)],
-        code    => \&oper
+        params => [qw(user dummy @rest)],
+        code   => \&oper
     },
     AWAY => {
-        params  => [qw(user dummy :rest)],
-        code    => \&away
+        params => [qw(user dummy :rest)],
+        code   => \&away
     },
     RETURN => {
-        params  => [qw(user)],
-        code    => \&return_away
+        params => [qw(user)],
+        code   => \&return_away
     },
     ADDCMODE => {
-        params  => [qw(server dummy any any any)],
-        code    => \&addcmode
+        params => [qw(server dummy any any any)],
+        code   => \&addcmode
     },
     CMODE => {
-        params  => [qw(source dummy channel ts server :rest)],
-        code    => \&cmode
+        params => [qw(source dummy channel ts server :rest)],
+        code   => \&cmode
     },
     PART => {
-        params  => [qw(user dummy channel ts :rest)],
-        code    => \&part
+        params => [qw(user dummy channel ts :rest)],
+        code   => \&part
     },
     TOPIC => {
-        params  => [qw(source dummy channel ts ts :rest)],
-        code    => \&topic
+        params => [qw(source dummy channel ts ts :rest)],
+        code   => \&topic
     },
     TOPICBURST => {
-        params  => [qw(source dummy channel ts any ts :rest)],
-        code    => \&topicburst
+        params => [qw(source dummy channel ts any ts :rest)],
+        code   => \&topicburst
     },
     KILL => {
-        params  => [qw(user dummy user :rest)],
-        code    => \&skill
+        params => [qw(user dummy user :rest)],
+        code   => \&skill
+    },
+    CONNECT => {
+        params => [qw(user dummy server any)],
+        code   => \&sconnect
     },
 
     # compact
 
     AUM => {
-        params  => [qw(server dummy @rest)],
-        code    => \&aum
+        params => [qw(server dummy @rest)],
+        code   => \&aum
     },
     ACM => {
-        params  => [qw(server dummy @rest)],
-        code    => \&acm
+        params => [qw(server dummy @rest)],
+        code   => \&acm
     },
     CUM => {
-        params  => [qw(server dummy any ts any :rest)],
-        code    => \&cum
+        params => [qw(server dummy any ts any :rest)],
+        code   => \&cum
     }
 );
 
 our $mod = API::Module->new(
     name        => 'core_scommands',
-    version     => '0.7',
+    version     => '0.8',
     description => 'the core set of server commands',
     requires    => ['server_commands'],
     initialize  => \&init
@@ -116,9 +120,9 @@ sub init {
 
     # register server commands
     $mod->register_server_command(
-        name        => $_,
-        parameters  => $scommands{$_}{params}  || undef,
-        code        => $scommands{$_}{code}
+        name       => $_,
+        parameters => $scommands{$_}{params}  || undef,
+        code       => $scommands{$_}{code}
     ) || return foreach keys %scommands;
 
     undef %scommands;
@@ -252,16 +256,16 @@ sub umode {
 }
 
 sub privmsgnotice {
-    # user any            any    :rest
-    # :uid PRIVMSG|NOTICE target :message
-    my ($server, $data, $user, $command, $target, $message) = @_;
+    # source any            any    :rest
+    # :uid   PRIVMSG|NOTICE target :message
+    my ($server, $data, $source, $command, $target, $message) = @_;
 
     # is it a user?
     my $tuser = user::lookup_by_id($target);
     if ($tuser) {
         # if it's mine, send it
         if ($tuser->is_local) {
-            $tuser->sendfrom($user->full, "$command $$tuser{nick} :$message");
+            $tuser->sendfrom($source->full, "$command $$tuser{nick} :$message");
             return 1
         }
     }
@@ -270,7 +274,7 @@ sub privmsgnotice {
     my $channel = channel::lookup_by_name($target);
     if ($channel) {
         # tell local users
-        $channel->channel::mine::send_all(':'.$user->full." $command $$channel{name} :$message", $user);
+        $channel->channel::mine::send_all(':'.$source->full." $command $$channel{name} :$message", $source);
         return 1
     }
 
@@ -527,7 +531,7 @@ sub sconnect {
     }
 
     if (!server::linkage::connect_server($server)) {
-        #$user->server_notice('CONNECT', 'couldn\'t connect to '.$server);
+        $user->server_notice('CONNECT', 'couldn\'t connect to '.$server);
     }
 
     return 1

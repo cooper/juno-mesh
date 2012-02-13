@@ -32,7 +32,7 @@ my %ocommands = (
 
 our $mod = API::Module->new(
     name        => 'core_ocommands',
-    version     => '0.5',
+    version     => '0.6',
     description => 'the core set of outgoing commands',
     requires    => ['outgoing_commands'],
     initialize  => \&init
@@ -125,8 +125,10 @@ sub umode {
 
 # privmsg and notice
 sub privmsgnotice {
-    my ($cmd, $user, $target, $message) = @_;
-    ":$$user{uid} $cmd $target :$message"
+    my ($cmd, $source, $target, $message) = @_;
+    my $id  = $source->id;
+    my $tid = $target->id;
+    ":$id $cmd $tid :$message"
 }
 
 

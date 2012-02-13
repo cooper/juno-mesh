@@ -150,7 +150,7 @@ my %ucommands = (
 
 our $mod = API::Module->new(
     name        => 'core_ucommands',
-    version     => '0.7',
+    version     => '0.8',
     description => 'the core set of user commands',
     requires    => ['user_commands'],
     initialize  => \&init
@@ -364,7 +364,7 @@ sub privmsgnotice {
 
         # send it to the server holding this user
         else {
-            server::mine::fire_command($tuser->{location}, privmsgnotice => $command, $user, $tuser->{uid}, $message);
+            server::mine::fire_command($tuser->{location}, privmsgnotice => $command, $user, $tuser, $message);
         }
         return 1
     }
