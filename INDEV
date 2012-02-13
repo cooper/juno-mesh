@@ -872,3 +872,6 @@ CHANGES:
                removed pointless code which was used for PRIVMSG and NOTICE forwarding.
 
             8. added ERROR handler.
+
+            9. fixed bug in PRIVMSG and NOTICE handler which caused massive flooding.
+               fixed bug where QUIT message would be sent for server quits.

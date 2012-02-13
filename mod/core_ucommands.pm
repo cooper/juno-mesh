@@ -695,7 +695,7 @@ sub quit {
         $reason = col((split /\s+/,  $data, 2)[1])
     }
 
-    $user->{conn}->done("~$reason");
+    $user->{conn}->done("~ $reason");
 }
 
 sub part {
