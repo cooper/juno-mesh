@@ -10,7 +10,7 @@ use utils qw[conf lconf log2 fatal gv set];
 utils::ircd_LOAD();
 
 our @reloadable;
-my ($VERSION, %global) = '4.0.0.6';
+my ($VERSION, %global) = '4.0.0.7';
 
 sub start {
 
@@ -268,7 +268,7 @@ sub begin {
     %global = (
         NAME    => 'juno-ircd',
         VERSION => $VERSION,
-        PROTO   => '0.0.1',
+        PROTO   => '2.0.0',
         START   => time,
         NOFORK  => 'NOFORK' ~~ @ARGV,
 

@@ -144,7 +144,9 @@ sub handle {
         }
 
         # it exists- parse it.
-        $commands{$command}{source}{code}($server, $line, @s);
+        foreach my $source (keys %{$commands{$command}}) {
+            $commands{$command}{$source}{code}($server, $line, @s);
+        }
     }
     return 1
 }

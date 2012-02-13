@@ -264,9 +264,6 @@ sub privmsgnotice {
             $tuser->sendfrom($user->full, "$command $$tuser{nick} :$message");
             return 1
         }
-        # otherwise pass this on...
-        server::mine::fire_command($tuser->{location}, privmsgnotice => $command, $user, $tuser->{uid}, $message);
-        return 1
     }
 
     # must be a channel
