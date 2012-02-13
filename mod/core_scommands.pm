@@ -9,102 +9,82 @@ use utils qw(col log2 lceq lconf match cut_to_limit conf gv);
 my %scommands = (
     SID => {
         params  => [qw(server dummy any ts any any any :rest)],
-        forward => 1,
         code    => \&sid
     },
     UID => {
         params  => [qw(server dummy any ts any any any any any any :rest)],
-        forward => 1,
         code    => \&uid
     },
     QUIT => {
         params  => [qw(source dummy :rest)],
-        forward => 1,
         code    => \&quit
     },
     NICK => {
         params  => [qw(user dummy any)],
-        forward => 1,
         code    => \&nick
     },
     BURST => {
         params  => [qw(server)],
-        forward => 1,
         code    => \&burst
     },
     ENDBURST => {
         params  => [qw(server)],
-        forward => 1,
         code    => \&endburst
     },
     ADDUMODE => {
         params  => [qw(server dummy any any)],
-        forward => 1,
         code    => \&addumode
     },
     UMODE => {
         params  => [qw(user dummy any)],
-        forward => 1,
         code    => \&umode
     },
     PRIVMSG => {
         params  => [qw(user any any :rest)],
-        forward => 0, # we have to figure ourself
         code    => \&privmsgnotice
     },
     NOTICE => {
         params  => [qw(user any any :rest)],
-        forward => 0, # we have to figure ourself
         code    => \&privmsgnotice
     },
     JOIN => {
         params  => [qw(user dummy any ts)],
-        forward => 1,
         code    => \&sjoin
     },
     OPER => {
         params  => [qw(user dummy @rest)],
-        forward => 1,
         code    => \&oper
     },
     AWAY => {
         params  => [qw(user dummy :rest)],
-        forward => 1,
         code    => \&away
     },
     RETURN => {
         params  => [qw(user)],
-        forward => 1,
         code    => \&return_away
     },
     ADDCMODE => {
         params  => [qw(server dummy any any any)],
-        forward => 1,
         code    => \&addcmode
     },
     CMODE => {
         params  => [qw(source dummy channel ts server :rest)],
-        forward => 1,
         code    => \&cmode
     },
     PART => {
         params  => [qw(user dummy channel ts :rest)],
-        forward => 1,
         code    => \&part
     },
     TOPIC => {
         params  => [qw(source dummy channel ts ts :rest)],
-        forward => 1,
         code    => \&topic
     },
     TOPICBURST => {
         params  => [qw(source dummy channel ts any ts :rest)],
-        forward => 1,
         code    => \&topicburst
     },
     KILL => {
         params  => [qw(user dummy user :rest)],
-        forward => 1,
         code    => \&skill
     },
 
@@ -112,24 +92,21 @@ my %scommands = (
 
     AUM => {
         params  => [qw(server dummy @rest)],
-        forward => 1,
         code    => \&aum
     },
     ACM => {
         params  => [qw(server dummy @rest)],
-        forward => 1,
         code    => \&acm
     },
     CUM => {
         params  => [qw(server dummy any ts any :rest)],
-        forward => 1,
         code    => \&cum
     }
 );
 
 our $mod = API::Module->new(
     name        => 'core_scommands',
-    version     => '0.4',
+    version     => '0.5',
     description => 'the core set of server commands',
     requires    => ['server_commands'],
     initialize  => \&init
@@ -141,7 +118,6 @@ sub init {
     $mod->register_server_command(
         name        => $_,
         parameters  => $scommands{$_}{params}  || undef,
-        forward     => $scommands{$_}{forward} || undef,
         code        => $scommands{$_}{code}
     ) || return foreach keys %scommands;
 

@@ -32,7 +32,7 @@ my %ocommands = (
 
 our $mod = API::Module->new(
     name        => 'core_ocommands',
-    version     => '0.4',
+    version     => '0.5',
     description => 'the core set of outgoing commands',
     requires    => ['outgoing_commands'],
     initialize  => \&init
@@ -238,6 +238,7 @@ sub cum {
 
     # create an array of uid!status
     foreach my $user (@{$channel->{users}}) {
+        next unless $user->is_local;
         my $str = $user->{uid};
         $str .= '!'.$prefixes{$user} if exists $prefixes{$user};
         push @userstrs, $str

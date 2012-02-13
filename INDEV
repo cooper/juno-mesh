@@ -863,3 +863,6 @@ CHANGES:
                don't send server information for any server except itself.
 
             5. actually, it makes more sense to do it this way.
+
+            6. remove 'forward' options from core_scommands.
+               in CUM command, don't send nonlocal users.
