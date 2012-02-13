@@ -397,7 +397,7 @@ sub privmsgnotice {
             next if $usr->is_local;
             next if $sent{$usr->{location}};
             $sent{$usr->{location}} = 1;
-            server::mine::fire_command($usr->{location}, privmsgnotice => $command, $user, $channel->{name}, $message);
+            server::mine::fire_command($usr->{location}, privmsgnotice => $command, $user, $channel, $message);
         }
 
         return 1
