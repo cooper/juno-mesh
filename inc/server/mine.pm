@@ -161,8 +161,8 @@ sub send_burst {
 
     # send modes using compact AUM and ACM
     my $me = gv('SERVER');
-    fire_command($me, aum => $me);
-    fire_command($me, acm => $me);
+    fire_command($server, aum => $me);
+    fire_command($server, acm => $me);
 
     # users
     foreach my $user (values %user::user) {
