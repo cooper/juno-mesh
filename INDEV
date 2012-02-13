@@ -870,3 +870,5 @@ CHANGES:
             7. don't pointlessly remember nonlocal users' prefixes in CUM.
                fixed a bug in server command handler.
                removed pointless code which was used for PRIVMSG and NOTICE forwarding.
+
+            8. added ERROR handler.
