@@ -511,10 +511,16 @@ sub skill {
     # :uid  KILL  uid  :reason
     my ($server, $data, $user, $tuser, $reason) = @_;
 
-    # we ignore any non-local users and just forward them
+    # we ignore any non-local users
     if ($tuser->is_local) {
         $tuser->{conn}->done("Killed: $reason [$$user{nick}]");
     }
+}
+
+sub sconnect {
+    # user dummy   server     any
+    # :uid CONNECT source_sid target_name
+    my ($server, $data, $user, $serv, $target) = @_;
 }
 
 $mod

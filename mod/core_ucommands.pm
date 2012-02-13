@@ -150,7 +150,7 @@ my %ucommands = (
 
 our $mod = API::Module->new(
     name        => 'core_ucommands',
-    version     => '0.6',
+    version     => '0.7',
     description => 'the core set of user commands',
     requires    => ['user_commands'],
     initialize  => \&init
@@ -1116,7 +1116,8 @@ sub ukill {
             return
         }
 
-        server::mine::fire_command_all(kill => $user, $tuser, $reason);
+        #server::mine::fire_command_all(kill => $user, $tuser, $reason);
+        server::mine::fire_command($tuser->{location}, kill => $user, $tuser, $reason);
     }
 
     $user->server_notice('kill', "$$tuser{nick} has been killed.");
