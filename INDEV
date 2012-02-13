@@ -861,3 +861,5 @@ CHANGES:
 
             4. in server burst, don't send nonlocal users.
                don't send server information for any server except itself.
+
+            5. actually, it makes more sense to do it this way.

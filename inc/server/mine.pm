@@ -159,16 +159,9 @@ sub send_burst {
 
     $server->sendme('BURST '.time);
 
-    # servers and mode names
-    foreach my $serv (values %server::server) {
-
-        # the server already knows *everything* about itself!
-        next if $serv == $server;
-
-        # send modes using compact AUM and ACM
-        fire_command($server, aum => $serv);
-        fire_command($server, acm => $serv)
-    }
+    # send modes using compact AUM and ACM
+    fire_command(gv('SERVER'), aum => $serv);
+    fire_command(gv('SERVER'), acm => $serv);
 
     # users
     foreach my $user (values %user::user) {
