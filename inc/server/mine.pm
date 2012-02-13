@@ -160,8 +160,9 @@ sub send_burst {
     $server->sendme('BURST '.time);
 
     # send modes using compact AUM and ACM
-    fire_command(gv('SERVER'), aum => $serv);
-    fire_command(gv('SERVER'), acm => $serv);
+    my $me = gv('SERVER');
+    fire_command($me, aum => $me);
+    fire_command($me, acm => $me);
 
     # users
     foreach my $user (values %user::user) {
