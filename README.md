@@ -11,7 +11,15 @@ There. Very good.
 
 ## what is juno-ircd version 4?
 
-juno4 is a fork of juno3 which supports mesh server linking.
+juno4 is a fork of juno3 which supports mesh server linking. No server links two servers.
+If a server disconnects, only the users on that server are lost. The rest of the network,
+including any services package, stays intact. With this setup, it is actually possible to
+have certain servers linked only to certain servers. I don't know why in the world you
+might want that, but it's possible just FYI. It also means that if a server disconnects
+from one server for whatever reason (i.e. ping timeout), it doesn't necessarily mean that
+that server is going to disconnect from the rest of the servers on the network. This
+change was a few very simple modifications to juno3's existing linking protocol. Thanks to
+AndrewX192 for recommending it. This is a very rare but useful feature.
 
 ## what is juno-ircd version 3?
 
