@@ -39,15 +39,8 @@ sub init {
 
 # status modes
 sub register_statuses {
-    my %needs = (
-        owner  => ['owner'],
-        admin  => ['owner', 'admin'],
-        op     => ['owner', 'admin', 'op'],
-        halfop => ['owner', 'admin', 'op'],
-        voice  => ['owner', 'admin', 'op', 'halfop']
-    );
-
-    foreach my $modename (keys %needs) {
+    foreach my $level (sort { $b <=> $a } keys %channel::modes::prefixes) {
+        my $modename = $channel::modes::prefixes{$level}[2];
         $mod->register_channel_mode_block( name => $modename, code => sub {
 
             my ($channel, $mode) = @_;
@@ -71,18 +64,34 @@ sub register_statuses {
             }
 
             if (!$mode->{force} && $source->is_local) {
+                my $check = sub {
 
-                # for each need, check if the user has it
-                my $check_needs = sub {
-                    foreach my $need (@{$needs{$modename}}) {
-                        return 1 if $channel->list_has($need, $source);
-                    }
-                    return
+                    # no basic status
+                    return unless $channel->user_has_basic_status($source);
+
+                    # he has a higher status..
+                    return if $channel->user_get_highest_level($source) <
+                              $channel->user_get_highest_level($target);
+
+                    return 1
                 };
 
-                # they don't have any of the needs
-                return unless $check_needs->();
+                # the above test(s) failed
+                if (!$check->()) {
+                    $mode->{send_no_privs} = 1;
+                    return
+                }
+            }
 
+            # add/remove status
+            $channel->{status}->{$target} ||= [];
+            my $statuses = $channel->{status}->{$target};
+
+            if ($mode->{state}) {
+                push @$statuses, $level
+            }
+            else {
+                @$statuses = grep { $_ != $level } @$statuses
             }
 
             # [USER RESPONSE, SERVER RESPONSE]

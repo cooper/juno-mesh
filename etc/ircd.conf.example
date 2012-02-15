@@ -63,15 +63,31 @@
     #   list (3)
     #   status (4)
 
+    # status modes should NOT be placed here. please see the prefixes section below.
+
     no_ext:        [0, 'n'] # no external channel messages      (n)
     protect_topic: [0, 't'] # only operators can set the topic  (t)
     moderated:     [0, 'm'] # only voiced and up may speak      (m)
     ban:           [3, 'b'] # channel ban                       (b)
-    owner:         [4, 'q'] #                                   (q)
-    admin:         [4, 'a'] #                                   (a)
-    op:            [4, 'o'] #                                   (o)
-    halfop:        [4, 'h'] #                                   (h)
-    voice:         [4, 'v'] #                                   (v)
+
+[ prefixes ]
+
+    # channel prefixes.
+    # to disable a channel prefix mode provided by core, remove any of these lines.
+    # any of this can be modified, but it is typically a good idea to leave op and voice
+    # intact. the format is [letter, prefix, level]. any status mode with a higher level
+    # has more privs than one with a lower level. for example, admins can't kick owners
+    # because two is greater than one. op should be 0. for things that check for basic
+    # channel status such as plain old mode setting, a user with any of the following will
+    # be allowed to do these things: "owner", "admin", "op", "halfop". however, this
+    # does not mean that juno is hard coded to five prefixes. this list might be extended
+    # by modules which allow you to add different prefixes at different levels.
+
+    owner:  ['q', '~', 2 ]
+    admin:  ['a', '&', 1 ]
+    op:     ['o', '@', 0 ]
+    halfop: ['h', '%', -1]
+    voice:  ['v', '+', -2]
 
 [ users ]
 

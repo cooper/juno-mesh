@@ -21,20 +21,32 @@ use utils 'log2';
 #   list (3)
 #   status (4)
 
-my %blocks;
+our (%blocks, %prefixes);
 
 # this just tells the internal server what
 # mode is associated with what letter and type by configuration
 sub add_internal_modes {
     my $server = shift;
+    log2('registering channel status modes');
+
+    # [letter, symbol, name]
+    foreach my $name (keys %{$utils::conf{sec}{prefixes}}) {
+        my $p = $utils::conf{sec}{prefixes}{$name};
+        $server->add_cmode($name, $p->[0], 4);
+        $prefixes{$p->[2]} = [ $p->[0], $p->[1], $name ]
+    }
+
     log2("registering channel mode letters");
+
     foreach my $name (keys %{$utils::conf{modes}{channel}}) {
         $server->add_cmode(
             $name,
             $utils::conf{modes}{channel}{$name}[1],
             $utils::conf{modes}{channel}{$name}[0]
         );
+
     }
+
     log2("end of internal modes");
 }
 

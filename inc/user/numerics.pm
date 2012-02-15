@@ -152,23 +152,11 @@ sub chanmodes {
 
 # PREFIX in RPL_ISUPPORT
 sub prefix {
-
-    my %modes = %{$utils::conf{modes}{channel}};
-
-    my $modestr =
-      $modes{owner}[1]  .
-      $modes{admin}[1]  .
-      $modes{op}[1]     .
-      $modes{halfop}[1] .
-      $modes{voice}[1]  ;
-
-    my $prefixes =
-      $channel::mine::prefix{owner}  .
-      $channel::mine::prefix{admin}  .
-      $channel::mine::prefix{op}     .
-      $channel::mine::prefix{halfop} .
-      $channel::mine::prefix{voice}  ;
-
+    my ($modestr, $prefixes) = (q.., q..);
+    foreach my $level (sort { $b <=> $a } keys %channel::modes::prefixes) {
+        $modestr  .= $channel::modes::prefixes{$level}[0];
+        $prefixes .= $channel::modes::prefixes{$level}[1];
+    }
     return "($modestr)$prefixes"
 }
 

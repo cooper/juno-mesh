@@ -446,7 +446,6 @@ sub cjoin {
         # if the channel exists, just join
         my $channel = channel::lookup_by_name($chname);
         my $time    = time;
-        my $result;
 
         # otherwise create a new one
         if (!$channel) {
@@ -455,7 +454,6 @@ sub cjoin {
                 'time' => $time
             });
             $new     = 1;
-            $result  = $channel->handle_mode_string($user->{server}, $user->{server}, conf('channels', 'automodes'), 1);
         }
         return if $channel->has_user($user);
 
@@ -467,15 +465,6 @@ sub cjoin {
 
         # tell servers that the user joined and the automatic modes were set
         server::mine::fire_command_all(sjoin => $user, $channel, $time);
-        server::mine::fire_command_all(cmode => $user->{server}, $channel, $time, gv('SERVER', 'sid'), $result) if $result;
-
-        # tell servers that this user gets owner
-        if ($new) {
-            $channel->add_to_list($_, $user) foreach qw/owner op/;
-            my $owner = gv('SERVER')->cmode_letter('owner');
-            my $op    = gv('SERVER')->cmode_letter('op');
-            server::mine::fire_command_all(cmode => $user->{server}, $channel, $time, gv('SERVER', 'sid'), "+$owner$op $$user{uid} $$user{uid}");
-        }
 
         $channel->channel::mine::cjoin($user, $time)
     }

@@ -227,6 +227,11 @@ sub handle_mode_string {
                 $force, $over_protocol
             );
 
+            # block says to send ERR_CHANOPRIVSNEEDED
+            if ($moderef->{send_no_privs} && $source->isa('user') && $source->is_local) {
+                $source->numeric(ERR_CHANOPRIVSNEEDED => $channel->{name});
+            }
+
             # blocks failed.
             if (!$force) { next letter unless $win }
 
@@ -366,13 +371,22 @@ sub user_is {
 
 # returns true value only if the passed user has status
 # greater than voice (halfop, op, admin, owner)
-# XXX: this will be removed eventually, so don't use it for new things.
 sub user_has_basic_status {
     my ($channel, $user) = @_;
     foreach my $status (qw|owner admin op halfop|) {
         return 1 if $channel->user_is($user, $status);
     }
     return
+}
+
+# get the highest level of a user
+sub user_get_highest_level {
+    my ($channel, $user) = @_;
+    if ($channel->{status}->{$user}) {
+        my $res = (sort { $b <=> $a } @{$channel->{status}->{$user}})[0];
+        return $res if defined $res
+    }
+    return -(999**999) # negative inf (no status)
 }
 
 # returns true if the two passed users have a channel in common.

@@ -132,15 +132,15 @@ sub take_lower_time {
     return $channel->{time}
 }
 
+# I hate this subroutine.
 # returns the highest prefix a user has
 sub prefix {
     my ($channel, $user) = @_;
-    return
-      $channel->list_has('owner',  $user) ? $prefix{owner}  :
-      $channel->list_has('admin',  $user) ? $prefix{admin}  :
-      $channel->list_has('op',     $user) ? $prefix{op}     :
-      $channel->list_has('halfop', $user) ? $prefix{halfop} :
-      $channel->list_has('voice',  $user) ? $prefix{voice}  : q..;
+    my $level = $channel->user_get_highest_level($user);
+    if (defined $level && $channel::modes::prefixes{$level}) {
+        return $channel::modes::prefixes{$level}[1]
+    }
+    return q..
 }
 
 1

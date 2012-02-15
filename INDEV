@@ -19,15 +19,23 @@ TODO for stability and performance:
     maximum connections in x seconds
     connection throttle
 
+STARTED BUT NOT FINISHED:
+
+    I added the ability to connect servers remotely but never made the CONNECT user command
+    capable of making it useful.
+
+    most channel modes are entirely screwed up. Permissions make little sense. 
+
 OPER FLAGS:
 
-    see_invisible: can see invisible users in NAMES
-    connect: use the CONNECT command
-    modload: use the MODLOAD command
-    modunload: use the MODUNLOAD command
-    rehash: use REHASH command locally
-    kill: use KILL command locally
-    gkill: use KILL command globally
+    see_invisible:  can see invisible users in NAMES
+    connect:        use the CONNECT command locally
+    gconnect:       use the CONNECT command globally
+    modload:        use the MODLOAD command
+    modunload:      use the MODUNLOAD command
+    rehash:         use REHASH command locally
+    kill:           use KILL command locally
+    gkill:          use KILL command globally
 
 PLANS:
 
@@ -49,9 +57,7 @@ API PLANS:
 
     GENERAL:
 
-        create a module API similar to juno v2's, except with the ability to "override" commands, modes, etc.
-        the ability to connect to a juno module server and automatically install updates, as well as notifying when the version of the ircd is no longer supported
-        support modules written in JavaScript, Ruby, and Perl.
+        create a module API similar to juno v2's, except with the ability to "override" commands, modes, etc
 
         module: fake ban
         module: abuse
@@ -64,7 +70,6 @@ API PLANS:
     CHANNELS:
 
         support many of the channel modes provided by unrealircd and inspircd modules
-
         module: channel mode to show invite notices
 
 CHANGES:
@@ -888,3 +893,10 @@ CHANGES:
 
             3. user->server_notice works on nonlocal users now.
                NOTICE server command supports server noticing now.
+
+            February 14, 2012
+
+            4. new prefix system! now juno can have over 9000 prefixes just like inspircd.
+               this adds a major change in the configuration.
+               creating a new channel gives the user now status anymore (temporary).
+               hopefully I can figure out how to fix that.

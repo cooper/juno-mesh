@@ -27,12 +27,13 @@ my %ocommands = (
     cum           => \&cum,
     acm           => \&acm,
     aum           => \&aum,
-    kill          => \&skill
+    kill          => \&skill,
+    connect       => \&sconnect
 );
 
 our $mod = API::Module->new(
     name        => 'core_ocommands',
-    version     => '0.6',
+    version     => '0.7',
     description => 'the core set of outgoing commands',
     requires    => ['outgoing_commands'],
     initialize  => \&init
@@ -57,6 +58,18 @@ sub quit {
     my ($connection, $reason) = @_;
     my $id = $connection->{type}->id;
     ":$id QUIT :$reason"
+}
+
+# new user
+sub uid {
+    my $user = shift;
+    my $cmd  = sprintf(
+        'UID %s %d %s %s %s %s %s %s :%s',
+        $user->{uid}, $user->{time}, $user->mode_string,
+        $user->{nick}, $user->{ident}, $user->{host},
+        $user->{cloak}, $user->{ip}, $user->{real}
+    );
+    ":$$user{server}{sid} $cmd"
 }
 
 sub sid {
@@ -98,18 +111,6 @@ sub topicburst {
 #########
 # users #
 #########
-
-# new user
-sub uid {
-    my $user = shift;
-    my $cmd  = sprintf(
-        'UID %s %d %s %s %s %s %s %s :%s',
-        $user->{uid}, $user->{time}, $user->mode_string,
-        $user->{nick}, $user->{ident}, $user->{host},
-        $user->{cloak}, $user->{ip}, $user->{real}
-    );
-    ":$$user{server}{sid} $cmd"
-}
 
 # nick change
 sub nickchange {
@@ -173,6 +174,10 @@ sub topic {
     ":$$user{uid} TOPIC $$channel{name} $$channel{time} $time :$topic"
 }
 
+sub sconnect {
+    my ($user, $server, $tname) = @_;
+    ":$$user{uid} CONNECT $$server{name} $tname"
+}
 
 ########
 # both #
