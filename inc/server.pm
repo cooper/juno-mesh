@@ -213,6 +213,7 @@ sub sendme   { server::mine::sendme(@_)   }
 # other
 sub id   { shift->{sid}  }
 sub full { shift->{name} }
+sub name { shift->{name} }
 
 1
 

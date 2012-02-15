@@ -900,3 +900,8 @@ CHANGES:
                this adds a major change in the configuration.
                creating a new channel gives the user now status anymore (temporary).
                hopefully I can figure out how to fix that.
+
+            February 15, 2012
+
+            5. added "normal" mode blocks for "normal" channel modes.
+               in other words, you have to have some sort of status (halfop+) to set any normal modes unless specified otherwise.

@@ -10,14 +10,6 @@ use strict;
 
 use utils qw[log2 conf gv];
 
-our %prefix = (
-    owner  => '~',
-    admin  => '&',
-    op     => '@',
-    halfop => '%',
-    voice  => '+'
-);
-
 # omg hax
 # it has the same name as the one in channel.pm.
 # the only difference is that this one sends
