@@ -150,7 +150,7 @@ my %ucommands = (
 
 our $mod = API::Module->new(
     name        => 'core_ucommands',
-    version     => '0.8',
+    version     => '0.9',
     description => 'the core set of user commands',
     requires    => ['user_commands'],
     initialize  => \&init
