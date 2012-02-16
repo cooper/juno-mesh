@@ -908,3 +908,5 @@ CHANGES:
 
             6. automatic channel modes on join work again. this is a much cleaner approach of doing this.
                this is also used to apply modes to the user who created the channel. see example configuration for details.
+
+            7. send CMODE if modes were changed automatically when channel is created. hopefully this should fix the desync issue.

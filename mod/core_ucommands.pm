@@ -150,7 +150,7 @@ my %ucommands = (
 
 our $mod = API::Module->new(
     name        => 'core_ucommands',
-    version     => '0.9',
+    version     => '1.0',
     description => 'the core set of user commands',
     requires    => ['user_commands'],
     initialize  => \&init
@@ -457,7 +457,7 @@ sub cjoin {
         }
 
         return if $channel->has_user($user);
-        my ($ur, $sr);
+        my ($me, $ur, $sr) = gv('SERVER');
 
         # check for ban
         if ($channel->list_matches('ban', $user->fullcloak) || $channel->list_matches('ban', $user->full)) {
@@ -467,7 +467,6 @@ sub cjoin {
 
         if ($new) {
             $channel->cjoin($user, $time); # early join
-            my $me  = gv('SERVER');
             my $str = conf('channels', 'automodes') || '';
             $str    =~ s/\+user/$$user{uid}/g;
             ($ur, $sr) = $channel->handle_mode_string($me, $me, $str, 1, 1);
@@ -475,6 +474,7 @@ sub cjoin {
 
         # tell servers that the user joined and the automatic modes were set
         server::mine::fire_command_all(sjoin => $user, $channel, $time);
+        server::mine::fire_command_all(cmode => $me, $channel, $time, $me->{sid}, $sr) if $sr;
 
         $channel->channel::mine::cjoin($user, $time, 1)
     }
