@@ -905,3 +905,6 @@ CHANGES:
 
             5. added "normal" mode blocks for "normal" channel modes.
                in other words, you have to have some sort of status (halfop+) to set any normal modes unless specified otherwise.
+
+            6. automatic channel modes on join work again. this is a much cleaner approach of doing this.
+               this is also used to apply modes to the user who created the channel. see example configuration for details.

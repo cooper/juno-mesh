@@ -95,7 +95,8 @@
 
 [ channels ]
 
-    automodes: "+nt"    # modes set on channel creation
+    automodes: "+ntqo +user +user" # modes set on channel creation. "+user" will be
+                                   # replaced with the user who created the channel.
 
 [ flood ]
 

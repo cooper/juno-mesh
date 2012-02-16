@@ -449,13 +449,15 @@ sub cjoin {
 
         # otherwise create a new one
         if (!$channel) {
+            $new     = 1;
             $channel = channel->new({
                 name   => $chname,
                 'time' => $time
             });
-            $new     = 1;
         }
+
         return if $channel->has_user($user);
+        my ($ur, $sr);
 
         # check for ban
         if ($channel->list_matches('ban', $user->fullcloak) || $channel->list_matches('ban', $user->full)) {
@@ -463,10 +465,18 @@ sub cjoin {
             return
         }
 
+        if ($new) {
+            $channel->cjoin($user, $time); # early join
+            my $me  = gv('SERVER');
+            my $str = conf('channels', 'automodes') || '';
+            $str    =~ s/\+user/$$user{uid}/g;
+            ($ur, $sr) = $channel->handle_mode_string($me, $me, $str, 1, 1);
+        }
+
         # tell servers that the user joined and the automatic modes were set
         server::mine::fire_command_all(sjoin => $user, $channel, $time);
 
-        $channel->channel::mine::cjoin($user, $time)
+        $channel->channel::mine::cjoin($user, $time, 1)
     }
 }
 

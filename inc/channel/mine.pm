@@ -15,9 +15,13 @@ use utils qw[log2 conf gv];
 # the only difference is that this one sends
 # the mode changes around
 sub cjoin {
-    my ($channel, $user, $time) = @_;
-    return if $channel->has_user($user);
-    $channel->cjoin($user, $time);
+    my ($channel, $user, $time, $force) = @_;
+    if ($channel->has_user($user)) {
+        return unless $force
+    }
+    else {
+        $channel->cjoin($user, $time);
+    }
 
     # for each user in the channel
     foreach my $usr (@{$channel->{users}}) {
