@@ -154,7 +154,7 @@ my %ucommands = (
 
 our $mod = API::Module->new(
     name        => 'core_ucommands',
-    version     => '1.2',
+    version     => '1.3',
     description => 'the core set of user commands',
     requires    => ['user_commands'],
     initialize  => \&init
@@ -719,7 +719,7 @@ sub quit {
 sub part {
     my ($user, $data, @args) = @_;
     my @m = split /\s+/, $data, 3;
-    my $reason = $args[2] ? col($m[2]) : q();
+    my $reason = defined $args[2] ? col($m[2]) : q();
 
     foreach my $chname (split ',', $args[1]) {
         my $channel = channel::lookup_by_name($chname);
@@ -737,7 +737,7 @@ sub part {
         }
 
         # remove the user and tell the other channel's users and servers
-        my $ureason = $reason ? " :$reason" : q();
+        my $ureason = defined $reason ? " :$reason" : q();
         $channel->channel::mine::send_all(':'.$user->full." PART $$channel{name}$ureason");
         server::mine::fire_command_all(part => $user, $channel, $channel->{time}, $reason);
         $channel->remove($user);
@@ -1120,7 +1120,6 @@ sub ukill {
             return
         }
 
-        #server::mine::fire_command_all(kill => $user, $tuser, $reason);
         server::mine::fire_command($tuser->{location}, kill => $user, $tuser, $reason);
     }
 
@@ -1134,9 +1133,11 @@ sub modules {
     foreach my $mod (@API::loaded) {
         $user->server_notice("    \2$$mod{name}\2");
         $user->server_notice("        version: $$mod{version}");
+        $user->server_notice("        description: $$mod{description}");
         foreach my $type (qw|user_commands server_commands channel_modes user_modes outgoing_commands|) {
             next unless $mod->{$type};
             my @a = @{$mod->{$type}};
+            next unless scalar @a;
             $user->server_notice("        $type");
             while (@a) {
                 my ($one, $two, $three) = (

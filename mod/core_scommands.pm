@@ -110,7 +110,7 @@ my %scommands = (
 
 our $mod = API::Module->new(
     name        => 'core_scommands',
-    version     => '0.8',
+    version     => '0.9',
     description => 'the core set of server commands',
     requires    => ['server_commands'],
     initialize  => \&init
@@ -378,7 +378,7 @@ sub part {
 
     # remove the user and tell the local channel users
     $channel->remove($user);
-    $reason = $reason ? " :$reason" : q();
+    $reason = defined $reason ? " :$reason" : q();
     $channel->channel::mine::send_all(':'.$user->full." PART $$channel{name}$reason");
     return 1
 }
