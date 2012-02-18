@@ -910,3 +910,8 @@ CHANGES:
                this is also used to apply modes to the user who created the channel. see example configuration for details.
 
             7. send CMODE if modes were changed automatically when channel is created. hopefully this should fix the desync issue.
+
+            February 17, 2012
+
+            8. made COMMANDS command prettier.
+               added the fabulous and famous LOLCAT module from juno2.

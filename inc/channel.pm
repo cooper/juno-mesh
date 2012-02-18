@@ -405,6 +405,7 @@ sub lookup_by_name {
     return $channels{$name}
 }
 
-sub id { shift->{name} }
+sub id   { shift->{name} }
+sub name { shift->{name} }
 
 1

@@ -150,7 +150,7 @@ my %ucommands = (
 
 our $mod = API::Module->new(
     name        => 'core_ucommands',
-    version     => '1.0',
+    version     => '1.1',
     description => 'the core set of user commands',
     requires    => ['user_commands'],
     initialize  => \&init
@@ -672,8 +672,8 @@ sub commands {
     # send a notice for each command
     foreach my $command (keys %user::mine::commands) {
         foreach my $source (keys %{$user::mine::commands{$command}}) {
-            $user->server_notice(sprintf "%-${i}s [\2%s\2] %-${i}s", $command,
-                $source, $user::mine::commands{$command}{$source}{desc})
+            $user->server_notice(sprintf "\2%-${i}s\2 %-${i}s", $command,
+                q(:).$user::mine::commands{$command}{$source}{desc}, $source)
         }
     }
 

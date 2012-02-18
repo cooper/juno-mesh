@@ -205,10 +205,10 @@ sub DESTROY {
 }
 
 # local shortcuts
-sub handle   { server::mine::handle(@_)   }
-sub send     { server::mine::send(@_)     }
-sub sendfrom { server::mine::sendfrom(@_) }
-sub sendme   { server::mine::sendme(@_)   }
+sub handle   { &server::mine::handle   }
+sub send     { &server::mine::send     }
+sub sendfrom { &server::mine::sendfrom }
+sub sendme   { &server::mine::sendme   }
 
 # other
 sub id   { shift->{sid}  }
