@@ -145,12 +145,16 @@ my %ucommands = (
         code   => \&ukill,
         desc   => 'forcibly remove a user from the server',
         params => 2
-    }
+    },
+    MODULES => {
+        code   => \&modules,
+        desc   => 'view loaded IRCd modules'
+    },
 );
 
 our $mod = API::Module->new(
     name        => 'core_ucommands',
-    version     => '1.1',
+    version     => '1.2',
     description => 'the core set of user commands',
     requires    => ['user_commands'],
     initialize  => \&init
@@ -416,7 +420,7 @@ sub cmap {
     my $users = scalar grep { $_->{server} == $me } values %user::user;
     my $per   = int $users / $total * 100;
 
-    $user->numeric('RPL_MAP', "- \2$$me{sid}\2 $$me{name}: $users [$per\%]");
+    $user->numeric('RPL_MAP', "- \2$$me{sid}\2 $$me{name} ($$me{ircd}): $users [$per\%]");
 
     my $avg;
     foreach my $server (values %server::server) {
@@ -424,7 +428,7 @@ sub cmap {
         $users = scalar grep { $_->{server} == $server } values %user::user;
         $per   = int $users / $total * 100;
         $avg  += $users;
-        $user->numeric('RPL_MAP', "    - \2$$server{sid}\2 $$server{name}: $users [$per\%]");
+        $user->numeric('RPL_MAP', "    - \2$$server{sid}\2 $$server{name} ($$server{ircd}): $users [$per\%]");
     }
 
     my $average = int $avg / scalar values %server::server;
@@ -907,12 +911,13 @@ sub ircd {
     $user->server_notice('        '.gv('NAME').' version '.gv('VERSION').' proto '.gv('PROTO'));
     $user->server_notice('    startup time');
     $user->server_notice('        '.POSIX::strftime('%a %b %d %Y at %H:%M:%S %Z', localtime gv('START')));
-    $user->server_notice('    loaded perl modules');
+    $user->server_notice('    loaded modules');
     $user->server_notice("        $_") foreach keys %INC;
+    $user->server_notice('    for module info see MODULES');
     $user->server_notice('    for command list see COMMANDS');
     $user->server_notice('    for license see INFO');
     $user->server_notice('*** End of ircd information');
-
+    return 1
 }
 
 sub lusers {
@@ -1120,6 +1125,31 @@ sub ukill {
     }
 
     $user->server_notice('kill', "$$tuser{nick} has been killed.");
+    return 1
+}
+
+sub modules {
+    my $user = shift;
+    $user->server_notice("Loaded ircd modules");
+    foreach my $mod (@API::loaded) {
+        $user->server_notice("    \2$$mod{name}\2");
+        $user->server_notice("        version: $$mod{version}");
+        foreach my $type (qw|user_commands server_commands channel_modes user_modes outgoing_commands|) {
+            next unless $mod->{$type};
+            my @a = @{$mod->{$type}};
+            $user->server_notice("        $type");
+            while (@a) {
+                my ($one, $two, $three) = (
+                    shift @a || q..,
+                    shift @a || q..,
+                    shift @a || q..
+                );
+                ($one, $two, $three) = (lc $one, lc $two, lc $three);
+                $user->server_notice("            - $one $two $three");
+            }
+        }
+    }
+    $user->server_notice("End of modules");
     return 1
 }
 

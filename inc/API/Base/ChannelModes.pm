@@ -25,7 +25,7 @@ sub register_channel_mode_block {
     );
 
     $mod->{channel_modes} ||= [];
-    push @{$mod->{user_modes}}, $opts{name};
+    push @{$mod->{channel_modes}}, $opts{name};
     return 1
 }
 
@@ -34,7 +34,7 @@ sub unload {
     log2("unloading channel modes registered by $$mod{name}");
 
     # delete 1 at a time
-    foreach my $name (@{$mod->{user_modes}}) {
+    foreach my $name (@{$mod->{channel_modes}}) {
         channel::modes::delete_block($name, $mod->{name});
     }
 

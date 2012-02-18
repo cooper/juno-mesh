@@ -174,7 +174,7 @@ sub handle {
                 $reason = col((split /\s+/,  $data, 2)[1])
             }
 
-            $connection->done("Quit: $reason");
+            $connection->done("~ $reason");
         }
 
     }

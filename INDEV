@@ -915,3 +915,7 @@ CHANGES:
 
             8. made COMMANDS command prettier.
                added the fabulous and famous LOLCAT module from juno2.
+
+            February 18, 2012
+
+            9. added MODULES command for viewing loaded IRCd modules.
